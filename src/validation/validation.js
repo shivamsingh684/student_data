@@ -10,6 +10,7 @@ const collegeValidation=async function(req,res,next){
     try{
         let data=req.body;
         let{name,fullName,logoLink}=data
+        if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Data is mandatory" })
 
         if(!name){return res.status(400).send({status:false,msg:"please provide the name"})}
         if (!(/^[a-zA-Z ]{2,30}$/).test(name)) return res.status(400).send({ status: false, msg: " Please enter name as A-Z or a-z" })
@@ -17,10 +18,10 @@ const collegeValidation=async function(req,res,next){
         if (collegeName) { return res.status(400).send({ status: false, msg: "this name is already exist please provide diffrent name" }) }
 
         if(!fullName){return res.status(400).send({status:false,msg:"please provide the fullName"})}
-        if (!(/^[a-zA-Z ]{2,30}$/).test(fullName)) return res.status(400).send({ status: false, msg: " Please enter fullName as A-Z or a-z" })
+        if (!(/^[a-zA-Z]{1,}/).test(fullName)) return res.status(400).send({ status: false, msg: " Please enter fullName as A-Z or a-z" })
 
         if(!logoLink){return res.status(400).send({status:false,msg:"please provide the logoLink"})}
-        if (!(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/).test(logoLink)) return res.status(400).send({ status: false, msg: " Please enter logoLink in correct format" })
+        if (!(/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/).test(logoLink)) return res.status(400).send({ status: false, msg: " Please enter logoLink in correct format" })
        
 
         next()
