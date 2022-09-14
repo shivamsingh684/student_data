@@ -23,7 +23,9 @@ const college = async function (req, res) {
 
 const getcollegeDetails = async function (req, res) {
     try {
+       
         let collegeName = req.query.collegeName;
+        if (Object.keys(req.query).length == 0) return res.status(400).send({ status: false, msg: "Please apply filter" })
         if (!collegeName) {
             return res.status(400).send({ status: false, message: "college name is required" });
         }

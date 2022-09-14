@@ -10,7 +10,8 @@ const createIntern = async function (req, res) {
     
     const savedInternData =  await internModel.create(internData);
     return res.status(201).send({status:true, message: savedInternData});
-  } catch (err) {
+  } 
+  catch (err) {
     return res.status(500).send({status: false, message: err.message});
   }
 };

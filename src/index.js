@@ -7,7 +7,7 @@ const app = express();
 app.use(bodyParser.json());
 
 mongoose.connect("mongodb+srv://plutonium-co:Y7XVLNecywgcT8ky@cluster0.ognlwhp.mongodb.net/group58Database", {
-    useNewUrlParser: true
+   
 })
 .then( () => console.log("MongoDb is connected"))
 .catch ( err => console.log(err) )
