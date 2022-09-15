@@ -7,10 +7,13 @@ const mongoose = require("mongoose");
 const createIntern = async function (req, res) {
   try {
     const internData = req.body;
-    const clgId = internData.collegeId
-    const clgData = await collegeModel.findById(clgId)
-    if(!clgData) {return res.status(404).send({status:false, message: "collegeId not found"});}
-    
+
+    const clgName = internData.collegeName
+    const clgData = await collegeModel.findOne({name:clgName, isDeleted:false})
+
+    if(!clgData) {return res.status(404).send({status:false, message: "collegeName not found"});}
+    internData.collegeId =clgData._id
+  
     const savedInternData =  await internModel.create(internData);
     return res.status(201).send({status:true, data: savedInternData});
   } 

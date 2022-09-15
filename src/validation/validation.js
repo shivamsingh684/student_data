@@ -1,17 +1,12 @@
 const collegeModel=require("../models/collegeModel")
 const internModel=require("../models/internModel")
-const { default: mongoose } = require("mongoose")
-
-let verify = function (ObjectId) {
-    return mongoose.Types.ObjectId.isValid(ObjectId)
-}
 
 function Boolean(value) {
     if (value == true || value == false) { return true }
     return false
 }
 
-// ==============================================college validation================================================================================
+//============= college validation ======================================================
 
 const collegeValidation=async function(req,res,next){
     try{
@@ -26,7 +21,7 @@ const collegeValidation=async function(req,res,next){
         if (!(/^[a-zA-Z ]{2,30}$/).test(name)) return res.status(400).send({ status: false, msg: " Please enter name as A-Z or a-z" })
 
         let collegeName = await collegeModel.findOne({ name: name })
-        if (collegeName) { return res.status(400).send({ status: false, msg: "this name is already exist please provide diffrent name" }) }
+        if (collegeName) { return res.status(400).send({ status: false, msg: "this name  already exist" }) }
 
         if(!fullName){return res.status(400).send({status:false,msg:"please provide the fullName"})}
         if(typeof fullName==='string' && fullName.trim().length === 0){return res.status(400).send({status:false,msg:"fullName is empty"})}
@@ -36,7 +31,8 @@ const collegeValidation=async function(req,res,next){
         if(!logoLink){return res.status(400).send({status:false,msg:"please provide the logoLink"})}
         if(typeof logoLink==='string' && logoLink.trim().length === 0){return res.status(400).send({status:false,msg:"logoLink is empty"})}
         if(typeof logoLink !=='string'){return res.status(400).send({status:false,msg:"logoLink is should be in string format"})}
-        if (!(/^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/).test(logoLink)) return res.status(400).send({ status: false, msg: " Please enter logoLink in correct format" })
+        if (!(/^https?:\/\/.*\.[s3].*\.(png|gif|webp|jpeg|jpg)\??.*$/gim
+        ).test(logoLink)) return res.status(400).send({ status: false, msg: " Please enter logoLink in correct format" })
 
         if (isDeleted) {
             if (Boolean(isDeleted) == false) return res.status(400).send({ status: false, msg: "isDeleted should be true or false" })
@@ -54,13 +50,13 @@ const collegeValidation=async function(req,res,next){
 
     module.exports.collegeValidation=collegeValidation
        
-// =========================================================intern validation=========================================================================
+// =================intern validation===========================================
 
         const  internValidation=async function(req,res,next){
         try{
          
         let data=req.body;
-        let{name,email,mobile,collegeId,isDeleted}=data
+        let{name,email,mobile,collegeName,isDeleted}=data
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Data is mandatory" })
 
 
@@ -85,13 +81,9 @@ const collegeValidation=async function(req,res,next){
         if (mobileNoCheck ) { return res.status(400).send({ status: false, msg: "this mobile number is already registerd" }) }
         
 
-        if(!collegeId) {return res.status(400).send({status:false,msg:"please provide the collegeId"})}
-        if(typeof collegeId==='string' && collegeId.trim().length === 0){return res.status(400).send({status:false,msg:"collegeId is empty"})}
-        if(typeof collegeId !== 'string') {return res.status(400).send({status:false,msg:"collegeId should be string"})}
-        if(collegeId){
-
-            if(!verify(collegeId)){return res.status(400).send({status:false,msg:"collegeId is invalid"})}
-        }
+        if(!collegeName) {return res.status(400).send({status:false,msg:"please provide the collegeName"})}
+        if(typeof collegeName==='string' && collegeName.trim().length === 0){return res.status(400).send({status:false,msg:"collegeName is empty"})}
+        if(typeof collegeName !== 'string') {return res.status(400).send({status:false,msg:"collegeName should be string"})}
 
         if (isDeleted) {
             if (Boolean(isDeleted) == false) return res.status(400).send({ status: false, msg: "isDeleted should be true or false" })
