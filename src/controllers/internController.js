@@ -1,7 +1,6 @@
 const internModel = require("../models/internModel");
 const mongoose = require("mongoose");
 
-// ------------------------------------------   Create Intern   ----------------------------------------------- //
 // =============================Create Intern Api==============================
 
 const createIntern = async function (req, res) {
@@ -9,7 +8,7 @@ const createIntern = async function (req, res) {
     const internData = req.body;
     
     const savedInternData =  await internModel.create(internData);
-    return res.status(201).send({status:true, message: savedInternData});
+    return res.status(201).send({status:true, data: savedInternData});
   } 
   catch (err) {
     return res.status(500).send({status: false, message: err.message});

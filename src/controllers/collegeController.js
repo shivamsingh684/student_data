@@ -9,7 +9,6 @@ const college = async function (req, res) {
         const data = req.body
         const collegeData = await collegeModel.create(data)
         return res.status(201).send({ status: true, data: collegeData })
-
     }
 
     catch (err) {
@@ -32,7 +31,8 @@ const getcollegeDetails = async function (req, res) {
         const college = await collegeModel.findOne({ name: collegeName, isDeleted: false, });
         if (!college)
             return res.status(400).send({ status: false, message: "No college found" });
-        const interData = await internModel.find({ collegeId: college._id });
+            
+        const interData = await internModel.find({ collegeId: college._id, isDeleted: false });
         if (interData.length == 0) {
             return res.status(404).send({ status: false, msg: "no such intern" })
         }
