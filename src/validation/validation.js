@@ -12,7 +12,7 @@ const collegeValidation=async function(req,res,next){
     try{
         let data=req.body;
         let{name,fullName,logoLink,isDeleted}=data
-
+        
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, msg: "Data is mandatory" })
 
         if(!name){return res.status(400).send({status:false,msg:"please provide the name"})}
