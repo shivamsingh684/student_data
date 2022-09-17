@@ -21,7 +21,7 @@ const collegeValidation=async function(req,res,next){
         if (!(/^[a-zA-Z ]{2,30}$/).test(name)) return res.status(400).send({ status: false, msg: " Please enter name as A-Z or a-z" })
 
         let collegeName = await collegeModel.findOne({ name: name })
-        if (collegeName) { return res.status(400).send({ status: false, msg: "this name  already exist" }) }
+        if (collegeName) { return res.status(409).send({ status: false, msg: "this name  already exist" }) }
 
         if(!fullName){return res.status(400).send({status:false,msg:"please provide the fullName"})}
         if(typeof fullName==='string' && fullName.trim().length === 0){return res.status(400).send({status:false,msg:"fullName is empty"})}
