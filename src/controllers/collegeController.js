@@ -12,13 +12,11 @@ const college = async function (req, res) {
     }
 
     catch (err) {
-        return res.status(500).send({ status: false, msg: err.message });
+        return res.status(500).send({ status: false, message: err.message });
     }
 }
 
-
-
-// =================================Get-CollegeDetails Api=============================
+// =================================Get CollegeDetails Api=============================
 
 const getcollegeDetails = async function (req, res) {
     try {
@@ -26,14 +24,14 @@ const getcollegeDetails = async function (req, res) {
         let collegeName = req.query.collegeName;
         if (Object.keys(req.query).length == 0) return res.status(400).send({ status: false, msg: "Please apply filter" })
         if (!collegeName) {
-            return res.status(400).send({ status: false, message: "college name is required" });
+            return res.status(400).send({ status: false, message: "College name is required" });
         }
         const college = await collegeModel.findOne({ name: collegeName, isDeleted: false, });
         if (!college)
             return res.status(400).send({ status: false, message: "No college found" });
             
-        const interData = await internModel.find({ collegeId: college._id, isDeleted: false });
-        const interns = interData.map(intern => {
+        const internData = await internModel.find({ collegeId: college._id, isDeleted: false });
+        const interns = internData.map(intern => {
 
             return {
                 _id: intern._id,
@@ -61,7 +59,6 @@ const getcollegeDetails = async function (req, res) {
 
     }
 };
-
 
 // Destructuring
 module.exports = { college, getcollegeDetails };
