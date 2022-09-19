@@ -30,22 +30,13 @@ const getcollegeDetails = async function (req, res) {
         if (!college)
             return res.status(400).send({ status: false, message: "No college found" });
             
-        const internData = await internModel.find({ collegeId: college._id, isDeleted: false });
-        const interns = internData.map(intern => {
-
-            return {
-                _id: intern._id,
-                name: intern.name,
-                email: intern.email,
-                mobile: intern.mobile
-            }
-        })
+        const internData = await internModel.find({ collegeId: college._id, isDeleted: false }).select({_id: 1, name: 1, email: 1, mobile: 1});
 
         const collegeDetails = {
             name: college.name,
             fullName: college.fullName,
             logoLink: college.logoLink,
-            interns: interns
+            interns: internData
 
         };
 
