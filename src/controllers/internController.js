@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 // =============================Create Intern Api==============================
 
 const createIntern = async function (req, res) {
+  res.setHeader('Access-Control-Allow-Origin','*')
   try {
     const internData = req.body;
 
