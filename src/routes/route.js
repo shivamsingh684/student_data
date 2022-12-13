@@ -1,16 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const collegeController = require("../controllers/collegeController")
-const internController = require("../controllers/internController")
-const validation=require("../validation/validation")
+const {createUser,loginUser}=require("../controllers/teacherController")
+const{createStudent,getStudentData,editStudent}=require("../controllers/studentController")
+const{authn,authz}=require("../auth/auth")
 
 
+//teacher
+router.post("/register",createUser)
+router.post("/login",loginUser)
 
-router.post("/functionup/colleges",validation.collegeValidation, collegeController.college)
+//student
+router.post("/addStudent",createStudent)
+router.get("/getstudent",authn,getStudentData)
+router.put("/updateDetails/:teacherId",authn,authz,editStudent)
 
-router.post("/functionup/interns",validation.internValidation, internController.createIntern)
-
-router.get("/functionup/collegeDetails", collegeController.getcollegeDetails)
 
 router.all("/*", function (req ,res){
           res.status(400).send("Invalid request........!!!")
