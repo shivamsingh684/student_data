@@ -59,7 +59,7 @@ const getStudentData = async (req, res) => {
         if (!checkName) return res.status(400).send({ status: false, message: `student ${Name} not found` })
         }
         if(Subject){
-            console.log(Subject)
+            
         if (!validator.regexSpaceChar(data.Subject)) return res.status(400).send({ status: false, message: " enter subject is in valid format" });
         const checkSubject = await studentModel.findOne({ Subject: Subject })
         if (!checkSubject) return res.status(400).send({ status: false, message: `subject ${Subject} not found` })
@@ -76,21 +76,30 @@ const getStudentData = async (req, res) => {
 
 //----------------------update/Edit data----------------------
 
+
+
 const editStudent = async (req, res) => {
     try {   
         
         const data = req.query
-        let { Name, Subject, Marks,studentId} = data
-        let savedData = await studentModel.findOne({Name:Name}|| {Subject:Subject}||{studentId:studentId})
-        console.log(savedData)
-        if(savedData.isDeleted==true){
-            res.status(200).send({message:"student already deleted"})
-        }
+        let { Name, Subject, Marks,teacherId} = data
+        
+        if (!Name) return res.status(400).send({ status: false, message: "Name is required" });
+        if (!validator.regexSpaceChar(data.Name)) return res.status(400).send({ status: false, message: " enter student Name is in valid format" });
+
+        if (!Subject) return res.status(400).send({ status: false, message: "subject is required" });
+        if (!validator.regexSpaceChar(data.Subject)) return res.status(400).send({ status: false, message: " enter subject is in valid format" });
+
+        if (!Marks) return res.status(400).send({ status: false, message: "marks is required" });
+        if (!validator.marks(Marks)) return res.status(400).send({ status: false, message: " enter marks is in valid format" });
+       
+        let savedData = await studentModel.findOne({Name:Name} ||{Subject:Subject}||{teacherId:teacherId})
+        
         if(savedData){
             let finalMarks=Number(savedData.Marks)+Number(Marks)
             let CreateData=await studentModel.findOneAndUpdate({Name: Name, Subject:Subject},
                 {$set: {Marks:Number(finalMarks)}},
-                 {new:true,upsert:true})
+                 {new:true})
            res.status(200).send({data:CreateData,message:"marks updated successfully"})
        
         }else{
@@ -104,5 +113,41 @@ const editStudent = async (req, res) => {
 }
 
 
+//---------------------------------------------Delete API-------------------------------------------------
 
-module.exports={createStudent,getStudentData,editStudent} 
+let studentdelete = async function (req, res) {
+    try {
+        
+        let data=req.query
+       let  {teacherId,studentId}=data
+
+        if (!validator.isValidObjectId(teacherId))return res.status(400).send({ status: false, msg: "Enter a valid userId" })
+
+        if (!validator.isValidObjectId(studentId))return res.status(400).send({ status: false, msg: "Enter a valid studentId" })
+
+        let checkUserId = await teacherModel.findOne({_id: teacherId});
+        if (!checkUserId) {
+            return res.status(400).send({ status: false, message: "No such user present" });
+        }
+
+        let checkStudentId = await studentModel.findOne({_id: studentId, isDeleted: false});
+        if (!checkStudentId) {
+            return res.status(400).send({ status: false, message: "No such student present" });
+        }
+
+        let deletestudent = await studentModel.findByIdAndUpdate(
+            studentId,
+            { $set: { isDeleted: true } },
+            { new: true }
+        )
+        res.status(200).send({ status: true, message: "SuccessFully Deleted" });
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+  };
+
+ 
+
+
+
+module.exports={createStudent,getStudentData,editStudent,studentdelete} 
